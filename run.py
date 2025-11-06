@@ -26,10 +26,10 @@ def check_dependencies():
         import numpy as np
         from ultralytics import YOLO
         from flask import Flask
-        print("✅ Все зависимости установлены")
+        print("[OK] Все зависимости установлены")
         return True
     except ImportError as e:
-        print(f"❌ Отсутствует зависимость: {e}")
+        print(f"[ERROR] Отсутствует зависимость: {e}")
         print("Установите зависимости: pip install -r requirements.txt")
         return False
 
@@ -38,15 +38,15 @@ def initialize_database():
     try:
         with app.app_context():
             db.create_all()
-        print("✅ База данных инициализирована")
+        print("[OK] База данных инициализирована")
         return True
     except Exception as e:
-        print(f"❌ Ошибка инициализации БД: {e}")
+        print(f"[ERROR] Ошибка инициализации БД: {e}")
         return False
 
 def main():
     """Основная функция"""
-    print("🚀 Запуск системы анализа видеопотока...")
+    print("Запуск системы анализа видеопотока...")
     print("=" * 50)
     
     # Настройка логирования
@@ -60,15 +60,15 @@ def main():
     if not initialize_database():
         sys.exit(1)
     
-    print("\n📋 Информация о системе:")
+    print("\nИнформация о системе:")
     print(f"   - Модель YOLO: {app.config['YOLO_MODEL']}")
     print(f"   - Порог уверенности: {app.config['CONFIDENCE_THRESHOLD']}")
     print(f"   - База данных: {app.config['SQLALCHEMY_DATABASE_URI']}")
     print(f"   - Email уведомления: {'Включены' if app.config['ENABLE_EMAIL_ALERTS'] else 'Отключены'}")
     
-    print("\n🌐 Веб-интерфейс будет доступен по адресу:")
+    print("\nВеб-интерфейс доступен по адресу:")
     print("   http://localhost:5000")
-    print("\n📱 API endpoints:")
+    print("\nAPI endpoints:")
     print("   - POST /api/start_analysis - Запуск анализа")
     print("   - POST /api/stop_analysis - Остановка анализа")
     print("   - POST /api/upload_frame - Загрузка кадра")
@@ -77,8 +77,8 @@ def main():
     print("   - GET  /api/status - Статус системы")
     
     print("\n" + "=" * 50)
-    print("🎯 Система готова к работе!")
-    print("   Нажмите Ctrl+C для остановки")
+    print("Система готова к работе!")
+    print("Нажмите Ctrl+C для остановки")
     print("=" * 50)
     
     try:
@@ -90,9 +90,9 @@ def main():
             threaded=True
         )
     except KeyboardInterrupt:
-        print("\n\n🛑 Система остановлена пользователем")
+        print("\n\n[INFO] Система остановлена пользователем")
     except Exception as e:
-        print(f"\n❌ Критическая ошибка: {e}")
+        print(f"\n[ERROR] Критическая ошибка: {e}")
         sys.exit(1)
 
 if __name__ == '__main__':

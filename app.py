@@ -222,6 +222,45 @@ def get_status():
         logger.error(f"Ошибка при получении статуса: {e}")
         return jsonify({'status': 'error', 'message': str(e)})
 
+@app.route('/api/metrics/charts')
+def get_metrics_charts():
+    """Получает графики метрик модели"""
+    try:
+        charts = video_processor.get_metrics_charts()
+        return jsonify({
+            'status': 'success',
+            'charts': charts
+        })
+    except Exception as e:
+        logger.error(f"Ошибка при генерации графиков: {e}")
+        return jsonify({'status': 'error', 'message': str(e)})
+
+@app.route('/api/metrics/report')
+def get_metrics_report():
+    """Получает отчет по метрикам"""
+    try:
+        report = video_processor.export_metrics_report()
+        return jsonify({
+            'status': 'success',
+            'report': report
+        })
+    except Exception as e:
+        logger.error(f"Ошибка при генерации отчета: {e}")
+        return jsonify({'status': 'error', 'message': str(e)})
+
+@app.route('/api/metrics/current')
+def get_current_metrics():
+    """Получает текущие метрики"""
+    try:
+        metrics = video_processor.metrics_analyzer.get_current_metrics()
+        return jsonify({
+            'status': 'success',
+            'metrics': _to_jsonable(metrics)
+        })
+    except Exception as e:
+        logger.error(f"Ошибка при получении метрик: {e}")
+        return jsonify({'status': 'error', 'message': str(e)})
+
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()

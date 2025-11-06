@@ -7,6 +7,7 @@ from datetime import datetime
 from collections import deque
 import logging
 import base64
+from metrics_analyzer import ModelMetricsAnalyzer
 
 class VideoProcessor:
     """Класс для обработки видеопотока в реальном времени"""
@@ -28,6 +29,9 @@ class VideoProcessor:
         # История для анализа движения
         self.frame_history = deque(maxlen=10)  # Храним последние 10 кадров
         self.detection_history = deque(maxlen=30)  # История детекций
+        
+        # Система метрик
+        self.metrics_analyzer = ModelMetricsAnalyzer()
         
         # Статистика
         self.stats = {
@@ -180,12 +184,17 @@ class VideoProcessor:
         if movement_analysis['is_suspicious']:
             suspicious_events.append(movement_analysis)
         
+        # Добавляем данные в анализатор метрик
+        processing_time = time.time() - start_time if 'start_time' in locals() else 0.1
+        self.metrics_analyzer.add_prediction(detections, processing_time)
+        
         return {
             'detections': detections,
             'suspicious_events': suspicious_events,
             'timestamp': datetime.utcnow().isoformat(),
             'frame_count': self.frame_count,
-            'stats': self.stats.copy()
+            'stats': self.stats.copy(),
+            'metrics': self.metrics_analyzer.get_current_metrics()
         }
     
     def _analyze_behavior(self, frame, detection):
@@ -297,5 +306,14 @@ class VideoProcessor:
             'results_available': not self.output_queue.empty(),
             'frame_count': self.frame_count,
             'event_count': self.event_count,
-            'stats': self.stats.copy()
+            'stats': self.stats.copy(),
+            'metrics': self.metrics_analyzer.get_current_metrics()
         }
+    
+    def get_metrics_charts(self):
+        """Возвращает графики метрик"""
+        return self.metrics_analyzer.generate_all_charts()
+    
+    def export_metrics_report(self):
+        """Экспортирует отчет по метрикам"""
+        return self.metrics_analyzer.export_metrics_report()

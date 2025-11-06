@@ -9,8 +9,8 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🔍 Система анализа видеопотока</h1>
-            <p>Автоматическое обнаружение подозрительных действий</p>
+            <h1>Система анализа видеопотока</h1>
+            <p>Автоматическое обнаружение подозрительных действий с использованием машинного обучения</p>
         </div>
 
         <div class="main-content">
@@ -21,15 +21,15 @@
                         <span id="cameraStatusText">Камера не активна</span>
                     </div>
                     <div class="controls">
-                        <button class="btn btn-primary" id="toggleCameraBtn" onclick="toggleCamera()">📹 Запустить камеру</button>
-                        <button class="btn btn-secondary" id="toggleAnalysisBtn" onclick="toggleAnalysis()" disabled style="display:none;">🚀 Начать анализ</button>
+                        <button class="btn btn-primary" id="toggleCameraBtn" onclick="toggleCamera()">Запустить камеру</button>
+                        <button class="btn btn-secondary" id="toggleAnalysisBtn" onclick="toggleAnalysis()" disabled style="display:none;">Начать анализ</button>
                     </div>
                 </div>
                 
                 <div class="video-container">
                     <div class="video-placeholder" id="videoPlaceholder">
-                        <i>📹</i>
-                        <p>Камера не запущена</p>
+                        <div class="camera-icon">📷</div>
+                        <p>Камера не активна</p>
                     </div>
                     <video id="videoElement" autoplay muted style="display: none;"></video>
                     <div class="video-overlay" id="videoOverlay" style="display: none;">
@@ -38,10 +38,10 @@
                 </div>
                 
                 <div class="offline-video" style="margin-top:20px;">
-                    <h3 class="section-title">🎞️ Анализ готового видео</h3>
+                    <h3 class="section-title">Анализ готового видео</h3>
                     <div class="controls" style="margin-bottom:10px; gap:10px;">
                         <input type="file" id="videoFileInput" accept="video/*" style="display:none;">
-                        <label for="videoFileInput" class="btn btn-primary">➕ Добавить видео</label>
+                        <label for="videoFileInput" class="btn btn-primary">Добавить видео</label>
                         <span id="videoFileName" style="color:#555;"></span>
                     </div>
                     <video id="localVideo" controls style="width:100%; max-height:360px; display:none;"></video>
@@ -56,7 +56,7 @@
             </div>
 
             <div class="status-panel">
-                <h3 class="section-title">📊 Статус системы</h3>
+                <h3 class="section-title">Статус системы</h3>
                 <div class="status-item">
                     <span class="status-label">Камера:</span>
                     <span class="status-value status-inactive" id="cameraStatus">Неактивна</span>
@@ -78,8 +78,11 @@
 
         <div class="events-section">
             <div class="section-title" style="display:flex; align-items:center; justify-content:space-between;">
-                <span>🚨 События безопасности</span>
-                <button class="btn btn-warning" onclick="clearEvents()">🧹 Очистить события</button>
+                <span>События безопасности</span>
+                <div>
+                    <button class="btn btn-secondary" onclick="toggleMetrics()" style="margin-right: 10px;">Показать метрики</button>
+                    <button class="btn btn-warning" onclick="clearEvents()">Очистить события</button>
+                </div>
             </div>
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
                 <div>
@@ -90,6 +93,71 @@
                     <h4 style="margin-bottom:10px;">Готовое видео</h4>
                     <div id="videoEventsList"></div>
                 </div>
+            </div>
+        </div>
+
+        <!-- Панель метрик -->
+        <div class="metrics-section" id="metricsSection" style="display: none;">
+            <div class="section-title">Метрики производительности модели</div>
+            
+            <!-- Текущие метрики -->
+            <div class="metrics-summary">
+                <div class="metric-card">
+                    <div class="metric-value" id="totalDetections">0</div>
+                    <div class="metric-label">Всего обнаружений</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="avgFPS">0.0</div>
+                    <div class="metric-label">Средний FPS</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="avgConfidence">0.0</div>
+                    <div class="metric-label">Средняя уверенность</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="precision">0.0</div>
+                    <div class="metric-label">Точность</div>
+                </div>
+            </div>
+
+            <!-- Графики -->
+            <div class="charts-container">
+                <div class="chart-section">
+                    <h4>ROC-кривая</h4>
+                    <div class="chart-placeholder" id="rocChart">
+                        <img id="rocImage" style="max-width: 100%; height: auto; display: none;">
+                        <div class="loading-chart">Загрузка графика...</div>
+                    </div>
+                </div>
+                
+                <div class="chart-section">
+                    <h4>Матрица ошибок</h4>
+                    <div class="chart-placeholder" id="confusionChart">
+                        <img id="confusionImage" style="max-width: 100%; height: auto; display: none;">
+                        <div class="loading-chart">Загрузка графика...</div>
+                    </div>
+                </div>
+                
+                <div class="chart-section">
+                    <h4>Производительность</h4>
+                    <div class="chart-placeholder" id="performanceChart">
+                        <img id="performanceImage" style="max-width: 100%; height: auto; display: none;">
+                        <div class="loading-chart">Загрузка графика...</div>
+                    </div>
+                </div>
+                
+                <div class="chart-section">
+                    <h4>Распределение классов</h4>
+                    <div class="chart-placeholder" id="distributionChart">
+                        <img id="distributionImage" style="max-width: 100%; height: auto; display: none;">
+                        <div class="loading-chart">Загрузка графика...</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="metrics-controls">
+                <button class="btn btn-primary" onclick="refreshMetrics()">Обновить метрики</button>
+                <button class="btn btn-secondary" onclick="exportReport()">Экспорт отчета</button>
             </div>
         </div>
     </div>
@@ -136,7 +204,7 @@
                 updateCameraStatus(true);
                 
                 // Обновляем кнопки
-                document.getElementById('toggleCameraBtn').textContent = '🛑 Остановить камеру';
+                document.getElementById('toggleCameraBtn').textContent = 'Остановить камеру';
                 document.getElementById('toggleCameraBtn').className = 'btn btn-warning';
                 document.getElementById('toggleAnalysisBtn').disabled = false;
                 
@@ -172,10 +240,10 @@
             updateCameraStatus(false);
             
             // Обновляем кнопки
-            document.getElementById('toggleCameraBtn').textContent = '📹 Запустить камеру';
+            document.getElementById('toggleCameraBtn').textContent = 'Запустить камеру';
             document.getElementById('toggleCameraBtn').className = 'btn btn-primary';
             document.getElementById('toggleAnalysisBtn').disabled = true;
-            document.getElementById('toggleAnalysisBtn').textContent = '🚀 Начать анализ';
+            document.getElementById('toggleAnalysisBtn').textContent = 'Начать анализ';
             document.getElementById('toggleAnalysisBtn').className = 'btn btn-secondary';
             
             showAlert('Камера остановлена', 'info');
@@ -217,7 +285,7 @@
                     isAnalyzing = true;
                     document.getElementById('analysisStatus').textContent = 'Активен';
                     document.getElementById('analysisStatus').className = 'status-value status-active';
-                    document.getElementById('toggleAnalysisBtn').textContent = '⏹️ Остановить анализ';
+                    document.getElementById('toggleAnalysisBtn').textContent = 'Остановить анализ';
                     document.getElementById('toggleAnalysisBtn').className = 'btn btn-danger';
                     // Запускаем отправку кадров и получение результатов
                     startFrameCapture();
@@ -243,7 +311,7 @@
                 document.getElementById('analysisStatus').textContent = 'Остановлен';
                 document.getElementById('analysisStatus').className = 'status-value status-inactive';
                 // Обновляем кнопки
-                document.getElementById('toggleAnalysisBtn').textContent = '🚀 Начать анализ';
+                document.getElementById('toggleAnalysisBtn').textContent = 'Начать анализ';
                 document.getElementById('toggleAnalysisBtn').className = 'btn btn-secondary';
                 
                 if (analysisInterval) {
@@ -323,7 +391,7 @@
 
         async function toggleLocalAnalysis() {
             if (!localVideo.src) {
-                showAlert('Сначала загрузите видео', 'danger');
+                showAlert('Необходимо загрузить видеофайл', 'danger');
                 return;
             }
             if (!isAnalyzing) {
@@ -337,8 +405,6 @@
                     isAnalyzing = true;
                     document.getElementById('analysisStatus').textContent = 'Активен';
                     document.getElementById('analysisStatus').className = 'status-value status-active';
-                    document.getElementById('analyzeLocalBtn').textContent = '⏹️ Остановить анализ видео';
-                    document.getElementById('analyzeLocalBtn').className = 'btn btn-danger';
                     startLocalCaptureLoop();
                     startResultPolling();
                     showAlert('Анализ видео запущен', 'success');
@@ -349,8 +415,6 @@
                 await stopAnalysis();
                 if (localAnalysisInterval) clearInterval(localAnalysisInterval);
                 if (localRafId) { cancelAnimationFrame(localRafId); localRafId = null; }
-                document.getElementById('analyzeLocalBtn').textContent = '🚀 Начать анализ видео';
-                document.getElementById('analyzeLocalBtn').className = 'btn btn-secondary';
             }
         }
 
@@ -516,7 +580,7 @@
                         });
                         renderVideoEvents();
                     }
-                    showAlert(`🚨 ${ev.description}`, 'danger');
+                    showAlert(`ВНИМАНИЕ: ${ev.description}`, 'danger');
                 });
             }
         }
@@ -599,6 +663,122 @@
                     alert.parentNode.removeChild(alert);
                 }
             }, 5000);
+        }
+
+        // Метрики
+        let metricsVisible = false;
+        let metricsInterval = null;
+
+        function toggleMetrics() {
+            const metricsSection = document.getElementById('metricsSection');
+            metricsVisible = !metricsVisible;
+            
+            if (metricsVisible) {
+                metricsSection.style.display = 'block';
+                document.querySelector('[onclick="toggleMetrics()"]').textContent = 'Скрыть метрики';
+                refreshMetrics();
+                // Автообновление метрик каждые 10 секунд
+                metricsInterval = setInterval(refreshMetrics, 10000);
+            } else {
+                metricsSection.style.display = 'none';
+                document.querySelector('[onclick="toggleMetrics()"]').textContent = 'Показать метрики';
+                if (metricsInterval) {
+                    clearInterval(metricsInterval);
+                    metricsInterval = null;
+                }
+            }
+        }
+
+        async function refreshMetrics() {
+            try {
+                // Получаем текущие метрики
+                const metricsResponse = await fetch('/api/metrics/current');
+                const metricsData = await metricsResponse.json();
+                
+                if (metricsData.status === 'success') {
+                    updateMetricsSummary(metricsData.metrics);
+                }
+
+                // Получаем графики
+                const chartsResponse = await fetch('/api/metrics/charts');
+                const chartsData = await chartsResponse.json();
+                
+                if (chartsData.status === 'success') {
+                    updateCharts(chartsData.charts);
+                }
+            } catch (error) {
+                console.error('Ошибка при обновлении метрик:', error);
+                showAlert('Ошибка при загрузке метрик', 'danger');
+            }
+        }
+
+        function updateMetricsSummary(metrics) {
+            document.getElementById('totalDetections').textContent = metrics.total_detections || 0;
+            document.getElementById('avgFPS').textContent = (metrics.avg_fps || 0).toFixed(1);
+            document.getElementById('avgConfidence').textContent = (metrics.avg_confidence || 0).toFixed(3);
+            document.getElementById('precision').textContent = (metrics.precision || 0).toFixed(3);
+        }
+
+        function updateCharts(charts) {
+            // ROC кривая
+            if (charts.roc_curve) {
+                const rocImg = document.getElementById('rocImage');
+                rocImg.src = 'data:image/png;base64,' + charts.roc_curve;
+                rocImg.style.display = 'block';
+                rocImg.parentElement.querySelector('.loading-chart').style.display = 'none';
+            }
+
+            // Матрица ошибок
+            if (charts.confusion_matrix) {
+                const confImg = document.getElementById('confusionImage');
+                confImg.src = 'data:image/png;base64,' + charts.confusion_matrix;
+                confImg.style.display = 'block';
+                confImg.parentElement.querySelector('.loading-chart').style.display = 'none';
+            }
+
+            // График производительности
+            if (charts.performance_chart) {
+                const perfImg = document.getElementById('performanceImage');
+                perfImg.src = 'data:image/png;base64,' + charts.performance_chart;
+                perfImg.style.display = 'block';
+                perfImg.parentElement.querySelector('.loading-chart').style.display = 'none';
+            }
+
+            // Распределение классов
+            if (charts.class_distribution) {
+                const distImg = document.getElementById('distributionImage');
+                distImg.src = 'data:image/png;base64,' + charts.class_distribution;
+                distImg.style.display = 'block';
+                distImg.parentElement.querySelector('.loading-chart').style.display = 'none';
+            }
+        }
+
+        async function exportReport() {
+            try {
+                const response = await fetch('/api/metrics/report');
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    // Создаем и скачиваем JSON файл
+                    const blob = new Blob([JSON.stringify(data.report, null, 2)], 
+                                        { type: 'application/json' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `metrics_report_${new Date().toISOString().slice(0,19)}.json`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                    
+                    showAlert('Отчет экспортирован', 'success');
+                } else {
+                    showAlert('Ошибка при экспорте отчета', 'danger');
+                }
+            } catch (error) {
+                console.error('Ошибка при экспорте:', error);
+                showAlert('Ошибка при экспорте отчета', 'danger');
+            }
         }
 
         // Инициализация

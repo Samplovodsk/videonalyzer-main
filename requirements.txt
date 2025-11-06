@@ -10,11 +10,7 @@ SQLAlchemy==2.0.21
 Flask-SQLAlchemy==3.0.5
 python-dotenv==1.0.0
 requests==2.31.0
-websockets==11.0.3
-asyncio==3.4.3
-threading==1.0
-queue==0.1.0
-datetime==5.3
-json==2.0.9
-base64==1.0.0
-io==1.0.0
+matplotlib==3.9.2
+seaborn==0.13.2
+scikit-learn==1.5.2
+pandas==2.2.3
